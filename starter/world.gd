@@ -2,6 +2,7 @@ extends Node3D
 ## Builds the reef from reef.gd. You do not need to edit this file.
 
 const WATER_LEVEL := 30.0
+const ReefBase := preload("res://starter/reef_base.gd")
 const DEFAULT_REEF := "res://reef.gd"
 
 var reef: RefCounted
@@ -26,16 +27,32 @@ func _ready() -> void:
 
 
 func rebuild() -> void:
-	# Reading the file from disk again means: save reef.gd, press Enter, see it.
+	var problem := _load_reef()
+	if problem == "":
+		_build()
+		return
+	if reef == null: # first run: show a flat, empty seabed
+		reef = ReefBase.new()
+		_build()
+	$HUD/Message.text = problem
+
+
+## Reads reef.gd from disk again, so saving it and pressing Enter shows the change.
+## Returns what went wrong, or "" if all is well.
+func _load_reef() -> String:
+	var file := reef_path.get_file()
+	if not FileAccess.file_exists(reef_path):
+		return "No %s yet. Create it next to main.tscn, then press Enter." % file
 	var script := ResourceLoader.load(reef_path, "", ResourceLoader.CACHE_MODE_IGNORE) as GDScript
 	if script == null or not script.can_instantiate():
-		$HUD/Message.text = "reef.gd has an error. Look at the Output panel in Godot."
-		if reef == null:
-			reef = preload("res://starter/reef_base.gd").new()
-			_build()
-		return
-	reef = script.new()
-	_build()
+		return "%s has an error. Look at the Output panel in Godot." % file
+	var made: Object = script.new()
+	if not made is ReefBase:
+		if made is Node:
+			made.free()
+		return "The first line of %s must be: extends \"res://starter/reef_base.gd\"" % file
+	reef = made
+	return ""
 
 
 func _build() -> void:

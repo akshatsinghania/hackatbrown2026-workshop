@@ -14,13 +14,15 @@ Needs Godot 4.7, nothing else. It works offline. Import `project.godot`, then pr
 
 ## What you write
 
-Only `reef.gd`. Everything in `starter/` is already done.
+One file, `reef.gd`, which you create yourself. Everything in `starter/` is already done.
+
+0. **Create it**: right-click `res://` in the FileSystem panel, Create New > Script, name it `reef.gd`. Delete what Godot puts in it and start with `extends "res://starter/reef_base.gd"`.
 
 1. **Seabed**: noise becomes height.
 2. **Ridges**: a second noise layer, folded into sharp crests.
 3. **Life**: a third noise layer decides where coral, kelp and rock grow.
 
-Stuck? Copy the whole of `solutions/step_1.gd`, `step_2.gd` or `step_3.gd` into `reef.gd`.
+Stuck? Copy the whole of `solutions/step_1.gd`, `step_2.gd` or `step_3.gd` into your `reef.gd`.
 
 ## Go further
 
